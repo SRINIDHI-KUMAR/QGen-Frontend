@@ -1,0 +1,833 @@
+/* ========== RESET & GLOBAL ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  background: #050816;
+}
+
+body {
+  overflow-y: auto;
+}
+
+/* ========== APP CONTAINER ========== */
+.app {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
+
+/* Animated gradient background */
+.app::before {
+  content: "";
+  position: absolute;
+  inset: -100px;
+  background:
+    radial-gradient(circle at 20% 20%, #3b82f650, transparent 35%),
+    radial-gradient(circle at 80% 30%, #8b5cf650, transparent 35%),
+    radial-gradient(circle at 50% 80%, #06b6d450, transparent 35%);
+  animation: moveBg 15s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes moveBg {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+/* ========== MAIN WRAPPER (CENTRED + COMPACT) ========== */
+.main-container {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  z-index: 10;
+  margin: 0 auto;
+}
+
+/* ========== GLASS CARD ========== */
+.glass-card {
+  width: 100%;
+  padding: 28px 28px;
+  border-radius: 28px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+  text-align: center;
+  animation: floatCard 5s ease-in-out infinite;
+  transition: all 0.2s;
+}
+
+@keyframes floatCard {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ========== TITLE ========== */
+.animated-title {
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  background: linear-gradient(90deg, #60a5fa, #22d3ee, #a855f7, #f472b6, #60a5fa);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textFlow 6s linear infinite;
+}
+
+@keyframes textFlow {
+  from { background-position: 0%; }
+  to { background-position: 400%; }
+}
+
+/* ========== INFO TIP ========== */
+.info-tip {
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ========== UPLOAD BOX ========== */
+.upload-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 12px;
+  cursor: pointer;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #3b82f6;
+  transition: all 0.25s ease;
+}
+
+.upload-box:hover {
+  border-color: #22d3ee;
+  transform: scale(1.01);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
+}
+
+.upload-box input {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.upload-box span {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.file-name {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: #90cdf4;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* ========== GENERATE BUTTON ========== */
+.generate-btn {
+  width: 100%;
+  margin-top: 20px;
+  background: linear-gradient(95deg, #3b82f6, #2563eb);
+  border: none;
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.3);
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+  background: linear-gradient(95deg, #2563eb, #1d4ed8);
+}
+
+/* ========== HISTORY PANEL ========== */
+.history-panel {
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 16px 18px;
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.history-panel h3 {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+/* History cards */
+.history-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-item:hover {
+  background: rgba(59, 130, 246, 0.25);
+  transform: translateX(4px);
+}
+
+.history-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.history-info div {
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-info small {
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+
+.delete-history {
+  background: rgba(255, 70, 70, 0.2);
+  border: none;
+  color: #ffb4a2;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 30px;
+  transition: all 0.15s;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.delete-history:hover {
+  background: rgba(239, 68, 68, 0.6);
+  color: white;
+  transform: scale(1.02);
+}
+
+.empty-history {
+  color: #9ca3af;
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 18px 0;
+  font-style: italic;
+}
+
+/* Custom scrollbar */
+.history-panel::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-panel::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+/* ========== MODAL (GLASS DIALOG) ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 550px;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: modalFade 0.2s ease;
+}
+
+@keyframes modalFade {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: 0.2s;
+}
+
+.close-modal:hover {
+  color: white;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.question-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.question-list li {
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  border-left: 4px solid #3b82f6;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.modal-footer {
+  padding: 15px 22px;
+  text-align: right;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-footer button {
+  background: #3b82f6;
+  border: none;
+  padding: 8px 22px;
+  border-radius: 40px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: 0.2s;
+}
+
+.modal-footer button:hover {
+  background: #2563eb;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 640px) {
+  .main-container {
+    max-width: 95%;
+  }
+  .glass-card {
+    padding: 22px 18px;
+  }
+  .history-panel {
+    padding: 12px 14px;
+    max-height: 220px;
+  }
+  .animated-title {
+    font-size: 1.8rem;
+  }
+  .generate-btn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+  .modal-container {
+    width: 95%;
+  }
+}
+
+/* ========== UTILITIES ========== */
+.mt-1 {
+  margin-top: 4px;
+}
+
+.text-glow {
+  text-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
+}/* ========== DIALOG CURVED, CENTERED TITLE & BUTTONS (FIXED) ========== */
+
+
+/* Force curve on PrimeReact Dialog - more aggressive */
+.curved-dialog.p-dialog,
+.curved-dialog .p-dialog,
+.p-dialog.curved-dialog {
+  border-radius: 32px !important;
+  overflow: hidden !important;
+}
+
+/* Also target the dialog's outer wrapper (portal) */
+.p-dialog-mask.curved-dialog ~ .p-dialog,
+.p-dialog.curved-dialog .p-dialog-content,
+.p-dialog.curved-dialog .p-dialog-header {
+  border-radius: 32px !important;
+}
+
+/* Ensure the entire dialog box gets curved corners */
+.curved-dialog {
+  border-radius: 32px !important;
+  overflow: hidden !important;
+}
+
+/* Target the dialog window directly */
+.p-dialog.curved-dialog .p-dialog-header {
+  border-top-left-radius: 32px !important;
+  border-top-right-radius: 32px !important;
+}
+
+.p-dialog.curved-dialog .p-dialog-footer {
+  border-bottom-left-radius: 32px !important;
+  border-bottom-right-radius: 32px !important;
+}
+/* Make the dialog box curved */
+.curved-dialog .p-dialog {
+  border-radius: 32px !important;
+  overflow: hidden;
+}
+
+/* Center the header title */
+.centered-header .p-dialog-header {
+  justify-content: center !important;
+  text-align: center;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+.centered-header .p-dialog-header .p-dialog-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 auto;
+}
+
+/* Ensure the header icons (maximize, close) stay on the right */
+.centered-header .p-dialog-header-icons {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Footer buttons: centered row with proper spacing and no overlap */
+.dialog-footer-centered {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1rem 1.5rem;
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+}
+
+.dialog-footer-centered .p-button {
+  border-radius: 40px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;          /* space between icon and text */
+}
+
+/* Fix icon spacing inside buttons */
+.dialog-footer-centered .p-button .p-button-icon {
+  font-size: 1rem;
+  margin-right: 0;
+}
+
+/* Copy button (default blue) */
+.dialog-footer-centered .p-button:first-child {
+  background: #3b82f6;
+  border: none;
+}
+
+.dialog-footer-centered .p-button:first-child:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Download button – solid green */
+.dialog-footer-centered .p-button:last-child {
+  background: #10b981 !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.dialog-footer-centered .p-button:last-child:hover {
+  background: #059669 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Success feedback (Copied/Downloaded) keeps green */
+.dialog-footer-centered .p-button-success {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+/* Dialog content area with scroll */
+.curved-dialog .p-dialog-content {
+  background: #0f172a;
+  padding: 1.5rem 2rem;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* Dialog content styling (questions) */
+.dialog-content h2 {
+  color: #f1f5f9;
+  font-size: 1.25rem;
+  border-left: 4px solid #3b82f6;
+  padding-left: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.dialog-content ol {
+  padding-left: 1.5rem;
+}
+
+.dialog-content li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  color: #cbd5e6;
+}
+
+.dialog-content p strong {
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.15);
+  padding: 0.1rem 0.3rem;
+  border-radius: 6px;
+}
+
+.dialog-content hr {
+  margin: 1rem 0;
+  border-color: #334155;
+}
+
+/* ========== BIGGER HEADER & XEUS ========== */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2.5rem;          /* increased vertical padding (was 0.8rem) */
+  background: rgba(5, 8, 22, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left .xeus-animated {
+  font-size: 3.2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #60a5fa, #22d3ee, #a855f7, #f472b6, #60a5fa);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;                /* fallback: ensures text is transparent but gradient shows */
+  animation: xeusFlow 6s linear infinite;
+  margin: 0;
+  letter-spacing: -0.5px;
+  display: inline-block;
+  /* Force the element to have actual dimensions */
+  line-height: 1.2;
+}
+
+@keyframes xeusFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+/* Adjust greeting text size to match */
+.header-center .greeting {
+  color: white;
+  font-size: 1.2rem;              /* slightly larger */
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 1.5rem;
+  border-radius: 40px;
+  backdrop-filter: blur(4px);
+}
+
+/* Logout button size */
+.logout-btn {
+  background: #dc2626 !important;
+  border: none !important;
+  border-radius: 40px !important;
+  padding: 0.6rem 1.2rem !important;  /* bigger button */
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #b91c1c !important;
+  transform: translateY(-2px);
+}
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #050816;
+  padding: 1rem;
+}
+
+.auth-card {
+  max-width: 450px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.field {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.field label {
+  display: block;
+  color: #cbd5e1;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.auth-switch {
+  margin-top: 1.5rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.auth-link {
+  color: #60a5fa;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.loading-screen {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  background: #050816;
+}
+
+/* Adjust main content to not hide under fixed header */
+.app {
+  padding-top: 5rem;
+}
+/* ========== CURVED INPUT FIELDS (fully fixed for all inputs, including Password) ========== */
+/* Base input styling */
+.curved-input,
+.p-inputtext.curved-input,
+.p-password .p-inputtext,
+.p-password-input {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 20px !important;
+  padding: 0.75rem 1rem !important;
+  color: white !important;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+/* Password input needs extra right padding for the eye icon */
+.p-password .p-inputtext {
+  padding: 0.75rem 2.5rem 0.75rem 1rem !important;
+}
+
+/* Focus state for all inputs */
+.curved-input:focus,
+.p-inputtext.curved-input:focus,
+.p-password .p-inputtext:focus,
+.p-password-input:focus {
+  outline: none !important;
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Password toggle (eye) icon styling */
+.p-password .p-password-icon {
+  color: #cbd5e1;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.p-password .p-password-icon:hover {
+  color: #60a5fa;
+}
+
+/* Ensure the password component container takes full width */
+.p-password {
+  display: block !important;
+  width: 100%;
+}
+
+/* Placeholder styling */
+.curved-input::placeholder,
+.p-inputtext::placeholder,
+.p-password .p-inputtext::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Remove extra focus ring from PrimeReact (optional) */
+.p-password .p-inputtext:enabled:focus {
+  box-shadow: none;
+}
+
+/* Field spacing (kept from your original) */
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  letter-spacing: 0.3px;
+}
+
+/* ========== CUSTOM TOAST (top-right, smaller, below header) ========== */
+.custom-toast {
+  top: 80px !important;          /* pushes below the fixed header */
+  width: 280px !important;       /* smaller width */
+}
+
+.custom-toast .p-toast-message {
+  border-radius: 16px !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.8rem !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.custom-toast .p-toast-message-content {
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.custom-toast .p-toast-message-icon {
+  font-size: 1rem !important;
+}
+
+.custom-toast .p-toast-message-text {
+  margin: 0 !important;
+}
+
+.custom-toast .p-toast-summary {
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+
+.custom-toast .p-toast-detail {
+  font-size: 0.7rem !important;
+  margin-top: 0.1rem;
+}
