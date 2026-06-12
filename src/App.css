@@ -831,3 +831,325 @@ body {
   font-size: 0.7rem !important;
   margin-top: 0.1rem;
 }
+
+
+
+/* ========== HEADER & ALIGNMENT (SINGLE CLEAN VERSION) ========== */
+.auth-header {
+  background: transparent;
+  padding: 1rem 2rem 0.5rem;
+  position: relative;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #fff, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.about-link {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.about-link:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+.auth-header h1 {
+  text-align: center;
+  margin: 0.5rem 0 0.75rem;
+  font-size: 2.2rem;
+}
+
+.header-line {
+  width: calc(100% + 4rem);
+  margin-left: -2rem;
+  height: 2px;
+  background: linear-gradient(90deg, #a78bfa, #ec4899, #fbbf24);
+  border: none;
+}
+
+
+
+
+/* Header right section – align items in a row */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+
+
+
+/* Rounded border for the About (i) button */
+.about-header-btn {
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: 50% !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s;
+}
+
+.about-header-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05);
+  border-color: white !important;
+}
+
+/* Profile avatar styling */
+.profile-avatar {
+  background: linear-gradient(135deg, #60a5fa, #a855f7);
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: all 0.2s;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+}
+
+/* Menu popup style (optional – to match your dark theme) */
+.p-menu {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 0.5rem 0;
+}
+
+.p-menu .p-menuitem-link {
+  color: white;
+  padding: 0.6rem 1rem;
+  transition: all 0.2s;
+}
+
+.p-menu .p-menuitem-link:hover {
+  background: rgba(96, 165, 250, 0.2);
+}
+
+/* Logout button (already styled in your existing CSS) */
+.logout-btn {
+  margin-left: 0.25rem;
+}
+
+
+/* ========== ABOUT PAGE ENHANCEMENTS ========== */
+.about-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;    /* top alignment, no cropping */
+  justify-content: center;
+  padding: 2rem;
+}
+
+.about-card {
+  max-width: 850px;
+  width: 100%;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* No max-height limitation */
+}
+
+.about-content {
+  text-align: left;
+  margin: 1.5rem 0;
+}
+
+/* Each section – ensure visibility */
+.about-section {
+  margin-bottom: 2rem;
+  overflow: visible;
+}
+/* Target only the about card to keep other cards intact */
+.about-card.glass-card,
+.glass-card.about-card {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+
+.about-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  color: #a78bfa;
+  border-left: 3px solid #a78bfa;
+  padding-left: 0.75rem;
+}
+
+.about-section p {
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+/* Features grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.feature-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 0.75rem;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: white;
+  transition: all 0.2s;
+}
+
+.feature-item:hover {
+  background: rgba(167, 139, 250, 0.2);
+  transform: translateX(4px);
+}
+
+.feature-icon {
+  font-size: 1.1rem;
+}
+
+/* Steps list */
+.steps-list {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.steps-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  color: #cbd5e6;
+}
+
+/* Tech stack badges */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.tech-badge {
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  padding: 0.3rem 0.8rem;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #90cdf4;
+  transition: all 0.2s;
+}
+
+.tech-badge:hover {
+  background: rgba(96, 165, 250, 0.3);
+  transform: translateY(-2px);
+}
+
+.contact-email {
+  margin-top: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.about-divider {
+  margin: 1.5rem 0 1rem;
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+
+.version-text {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .about-card {
+    padding: 1.5rem;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-section h3 {
+    font-size: 1.2rem;
+  }
+}
+
+
+
+/* Back button styling – rounded, glass, with hover effect */
+.back-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 40px !important;        /* fully rounded */
+  padding: 0.5rem 1.2rem;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  backdrop-filter: blur(4px);
+  margin-bottom: 1.2rem;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(-3px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:active {
+  transform: translateX(-1px);
+}
