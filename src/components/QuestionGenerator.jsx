@@ -27,7 +27,7 @@ const QuestionGenerator = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append("file", file);
-      const res = await axios.post("https://qgen-backend-8dx2.onrender.com", formData);
+      const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", formData);
       setQuestions(res.data.questions);
       setHistory((prev) => [
         {
