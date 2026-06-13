@@ -2453,3 +2453,31 @@ body {
 .light-theme .p-menu .p-menuitem-link:hover .p-menuitem-icon {
   color: #2563eb !important;
 }
+
+
+
+/* Custom Prompt Textarea */
+.prompt-config {
+  margin-bottom: 1.5rem;
+}
+.prompt-config textarea {
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 20px;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+.prompt-config textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+}
+.light-theme .prompt-config textarea {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}

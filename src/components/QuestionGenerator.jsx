@@ -6,12 +6,13 @@ import ReactMarkdown from "react-markdown";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { InputTextarea } from "primereact/inputtextarea";
 import { useAuth } from "../context/AuthContext";
 
 const QuestionGenerator = () => {
-  const { user } = useAuth(); // Get current user
+  const { user } = useAuth();
   const userId = user?.id || user?.username || "guest";
-  const storagePrefix = `qgen_${userId}_`; // User-specific prefix
+  const storagePrefix = `qgen_${userId}_`;
 
   const [file, setFile] = useState(null);
   const [questions, setQuestions] = useState("");
@@ -25,11 +26,11 @@ const QuestionGenerator = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   
+  // Custom prompt
+  const [customPrompt, setCustomPrompt] = useState("Generate 10 MCQs, 5 short questions, and 5 long questions from the following PDF content.");
+
   // Stats
-  const [stats, setStats] = useState({
-    pdfsUploaded: 0,
-    questionsGenerated: 0,
-  });
+  const [stats, setStats] = useState({ pdfsUploaded: 0, questionsGenerated: 0 });
   const [counters, setCounters] = useState({ pdfs: 0, questions: 0 });
 
   const [copyFeedback, setCopyFeedback] = useState(false);
@@ -44,15 +45,12 @@ const QuestionGenerator = () => {
     { icon: "✨", message: "Finalizing Question Paper...", progress: 100 },
   ];
 
-  // Generate unique ID
   const generateUniqueId = () => {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
+    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
     return `${Date.now()}-${Math.random()}-${performance.now()}`;
   };
 
-  // Load user-specific stats and history from localStorage
+  // Load user data from localStorage
   useEffect(() => {
     const savedStats = localStorage.getItem(`${storagePrefix}stats`);
     if (savedStats) {
@@ -60,29 +58,20 @@ const QuestionGenerator = () => {
       setStats(parsed);
       setCounters({ pdfs: parsed.pdfsUploaded, questions: parsed.questionsGenerated });
     } else {
-      // Initialize empty stats for new user
       setStats({ pdfsUploaded: 0, questionsGenerated: 0 });
       setCounters({ pdfs: 0, questions: 0 });
     }
-    
     const savedHistory = localStorage.getItem(`${storagePrefix}history`);
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
-    }
+    if (savedHistory) setHistory(JSON.parse(savedHistory));
   }, [storagePrefix]);
 
-  // Animate counters when stats change
+  // Animate counters
   useEffect(() => {
-    const duration = 800;
-    const steps = 40;
-    const startPdf = counters.pdfs;
-    const startQ = counters.questions;
-    const endPdf = stats.pdfsUploaded;
-    const endQ = stats.questionsGenerated;
-    const diffPdf = endPdf - startPdf;
-    const diffQ = endQ - startQ;
+    const duration = 800, steps = 40;
+    const startPdf = counters.pdfs, startQ = counters.questions;
+    const endPdf = stats.pdfsUploaded, endQ = stats.questionsGenerated;
+    const diffPdf = endPdf - startPdf, diffQ = endQ - startQ;
     if (diffPdf === 0 && diffQ === 0) return;
-
     let step = 0;
     const timer = setInterval(() => {
       step++;
@@ -99,26 +88,21 @@ const QuestionGenerator = () => {
     return () => clearInterval(timer);
   }, [stats]);
 
-  // Helper to update stats and save to localStorage
   const updateStats = (type, questionCount = 0) => {
     setStats(prevStats => {
       let newStats = { ...prevStats };
-      if (type === "upload") {
-        newStats.pdfsUploaded += 1;
-      } else if (type === "generate") {
-        const increment = questionCount > 0 ? questionCount : 10;
-        newStats.questionsGenerated += increment;
-      }
+      if (type === "upload") newStats.pdfsUploaded += 1;
+      else if (type === "generate") newStats.questionsGenerated += questionCount;
       localStorage.setItem(`${storagePrefix}stats`, JSON.stringify(newStats));
       return newStats;
     });
   };
 
-  // Save history to localStorage
   const saveHistory = (newHistory) => {
     localStorage.setItem(`${storagePrefix}history`, JSON.stringify(newHistory));
   };
 
+  // Processing animation
   useEffect(() => {
     let interval;
     if (processingVisible) {
@@ -132,9 +116,7 @@ const QuestionGenerator = () => {
           setCurrentStep(stepIndex);
           setStepMessage(processingSteps[stepIndex].message);
           setProgress(processingSteps[stepIndex].progress);
-        } else {
-          clearInterval(interval);
-        }
+        } else clearInterval(interval);
       }, 2000);
     }
     return () => clearInterval(interval);
@@ -152,16 +134,8 @@ const QuestionGenerator = () => {
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
+  const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
@@ -174,18 +148,24 @@ const QuestionGenerator = () => {
       toast.current.show({ severity: 'warn', summary: 'No file', detail: 'Please select a PDF first', life: 2000 });
       return;
     }
+    if (!customPrompt.trim()) {
+      toast.current.show({ severity: 'warn', summary: 'Empty prompt', detail: 'Please enter a prompt', life: 2000 });
+      return;
+    }
     try {
       setProcessingVisible(true);
       setLoading(true);
       const formData = new FormData();
       formData.append("file", file);
-      const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", formData);
+      formData.append("custom_prompt", customPrompt);
+
+const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", formData);
       const generatedQuestions = res.data.questions;
       setQuestions(generatedQuestions);
-      
+
       const questionCount = (generatedQuestions.match(/\d+\./g) || []).length;
       updateStats("generate", questionCount);
-      
+
       const newHistoryItem = {
         id: generateUniqueId(),
         fileName: file.name,
@@ -195,7 +175,7 @@ const QuestionGenerator = () => {
       const newHistory = [newHistoryItem, ...history].slice(0, 20);
       setHistory(newHistory);
       saveHistory(newHistory);
-      
+
       setProcessingVisible(false);
       setVisible(true);
     } catch (err) {
@@ -231,11 +211,8 @@ const QuestionGenerator = () => {
     doc.text("Generated Questions", margin, y);
     y += 15;
     doc.setFontSize(11);
-    lines.forEach((line) => {
-      if (y > doc.internal.pageSize.getHeight() - 15) {
-        doc.addPage();
-        y = 20;
-      }
+    lines.forEach(line => {
+      if (y > doc.internal.pageSize.getHeight() - 15) { doc.addPage(); y = 20; }
       doc.text(line, margin, y);
       y += 6;
     });
@@ -246,34 +223,18 @@ const QuestionGenerator = () => {
 
   const footer = (
     <div className="dialog-footer-centered">
-      <Button
-        label={copyFeedback ? "Copied! ✓" : "Copy"}
-        icon="pi pi-copy"
-        onClick={copyQuestions}
-        className={copyFeedback ? "p-button-success" : ""}
-      />
-      <Button
-        label={downloadFeedback ? "Downloaded! ✓" : "Download PDF"}
-        icon="pi pi-download"
-        onClick={downloadPDF}
-        className={downloadFeedback ? "p-button-success" : ""}
-      />
+      <Button label={copyFeedback ? "Copied! ✓" : "Copy"} icon="pi pi-copy" onClick={copyQuestions} className={copyFeedback ? "p-button-success" : ""} />
+      <Button label={downloadFeedback ? "Downloaded! ✓" : "Download PDF"} icon="pi pi-download" onClick={downloadPDF} className={downloadFeedback ? "p-button-success" : ""} />
     </div>
   );
 
-  const processingFooter = (
-    <div className="dialog-footer-centered">
-      <Button label="Processing..." disabled className="p-button-secondary" />
-    </div>
-  );
+  const processingFooter = <div className="dialog-footer-centered"><Button label="Processing..." disabled className="p-button-secondary" /></div>;
 
   const renderProcessingContent = () => (
     <div className="processing-content">
       <div className="processing-icon glow">{processingSteps[currentStep]?.icon || "🤖"}</div>
       <div className="processing-message">{stepMessage}</div>
-      <div className="progress-bar-container">
-        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-      </div>
+      <div className="progress-bar-container"><div className="progress-bar" style={{ width: `${progress}%` }}></div></div>
       <div className="processing-percent">{progress}%</div>
       <div className="processing-tip">✨ Our AI is working its magic ✨</div>
     </div>
@@ -293,7 +254,23 @@ const QuestionGenerator = () => {
         <div className="glass-card">
           <h1 className="animated-title">Question Generator</h1>
 
-          {/* Enhanced Drag & Drop Upload Area */}
+          {/* Custom Prompt Input - DeepSeek style */}
+          <div className="prompt-config" style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500, color: "var(--text-secondary)" }}>
+              ✍️ Your Prompt
+            </label>
+            <InputTextarea
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              rows={4}
+              autoResize
+              placeholder="Example: Generate 20 important questions from the following PDF content. Include MCQs, short answers, and long answers. Avoid duplicates and focus on key concepts."
+              className="curved-input"
+              style={{ width: "100%", resize: "vertical" }}
+            />
+          </div>
+
+          {/* Drag & Drop Area */}
           <div
             className={`upload-area ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
             onDragOver={handleDragOver}
@@ -301,13 +278,7 @@ const QuestionGenerator = () => {
             onDrop={handleDrop}
             onClick={() => fileInputRef.current.click()}
           >
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept=".pdf"
-              onChange={(e) => handleFileSelect(e.target.files[0])}
-              style={{ display: "none" }}
-            />
+            <input type="file" ref={fileInputRef} accept=".pdf" onChange={e => handleFileSelect(e.target.files[0])} style={{ display: "none" }} />
             {!file ? (
               <>
                 <div className="upload-illustration">📄</div>
@@ -326,88 +297,34 @@ const QuestionGenerator = () => {
             )}
           </div>
 
-          {/* Generate Button (only show if file selected) */}
-          {file && (
-            <Button
-              className="generate-btn"
-              label={loading ? "Generating..." : "Generate Questions"}
-              icon="pi pi-bolt"
-              onClick={generateQuestions}
-              disabled={loading}
-            />
-          )}
+          {file && <Button className="generate-btn" label={loading ? "Generating..." : "Generate Questions"} icon="pi pi-bolt" onClick={generateQuestions} disabled={loading} />}
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats */}
         <div className="stats-grid">
-          <div className="stat-card gradient-card-1">
-            <div className="stat-icon">📄</div>
-            <div className="stat-info">
-              <h3>PDFs Uploaded</h3>
-              <div className="stat-number">{counters.pdfs}</div>
-            </div>
-          </div>
-          <div className="stat-card gradient-card-2">
-            <div className="stat-icon">❓</div>
-            <div className="stat-info">
-              <h3>Questions Generated</h3>
-              <div className="stat-number">{counters.questions}</div>
-            </div>
-          </div>
+          <div className="stat-card gradient-card-1"><div className="stat-icon">📄</div><div className="stat-info"><h3>PDFs Uploaded</h3><div className="stat-number">{counters.pdfs}</div></div></div>
+          <div className="stat-card gradient-card-2"><div className="stat-icon">❓</div><div className="stat-info"><h3>Questions Generated</h3><div className="stat-number">{counters.questions}</div></div></div>
         </div>
 
-        {/* History Panel - Recent Generations */}
+        {/* History */}
         <div className="history-panel">
           <h3><i className="pi pi-history"></i> Recent Generations</h3>
-          {history.length === 0 ? (
-            <p>No history yet</p>
-          ) : (
-            history.map((item) => (
-              <div
-                key={item.id}
-                className="history-item"
-                onClick={() => {
-                  setQuestions(item.content);
-                  setVisible(true);
-                }}
-              >
-                <div>{item.fileName}</div>
-                <small>{item.date}</small>
-              </div>
-            ))
-          )}
+          {history.length === 0 ? <p>No history yet</p> : history.map(item => (
+            <div key={item.id} className="history-item" onClick={() => { setQuestions(item.content); setVisible(true); }}>
+              <div>{item.fileName}</div><small>{item.date}</small>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* AI Processing Dialog */}
-      <Dialog
-        header="AI is Thinking"
-        visible={processingVisible}
-        style={{ width: "550px", height: "auto" }}
-        onHide={() => {}}
-        closable={false}
-        draggable={false}
-        resizable={false}
-        className="curved-dialog centered-header processing-dialog"
-        footer={processingFooter}
-        contentStyle={{ minHeight: "280px" }}
-      >
+      {/* Processing Dialog */}
+      <Dialog header="AI is Thinking" visible={processingVisible} style={{ width: "550px", height: "auto" }} onHide={() => {}} closable={false} draggable={false} resizable={false} className="curved-dialog centered-header processing-dialog" footer={processingFooter} contentStyle={{ minHeight: "280px" }}>
         {renderProcessingContent()}
       </Dialog>
 
-      {/* Generated Questions Dialog */}
-      <Dialog
-        header="Generated Questions"
-        visible={visible}
-        style={{ width: "70vw", maxWidth: "900px" }}
-        onHide={() => setVisible(false)}
-        maximizable
-        footer={footer}
-        className="curved-dialog centered-header"
-      >
-        <div className="dialog-content">
-          <ReactMarkdown>{questions}</ReactMarkdown>
-        </div>  
+      {/* Results Dialog */}
+      <Dialog header="Generated Questions" visible={visible} style={{ width: "70vw", maxWidth: "900px" }} onHide={() => setVisible(false)} maximizable footer={footer} className="curved-dialog centered-header">
+        <div className="dialog-content"><ReactMarkdown>{questions}</ReactMarkdown></div>
       </Dialog>
     </div>
   );
