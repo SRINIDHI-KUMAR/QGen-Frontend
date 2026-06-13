@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ThemeToggle from "./ThemeToggle";        // 👈 import the toggle
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
-const Register = ({ onSwitchToLogin }) => {
+const Register = () => {
   const { register } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,14 +26,17 @@ const Register = ({ onSwitchToLogin }) => {
   return (
     <>
       <header className="auth-header">
-        {/* Top row: logo (left) + About link (right) */}
+        {/* Top row: logo (left) + Theme Toggle + About link (right) */}
         <div className="header-top">
           <div className="logo">
             <h1 className="animated-title">QGen</h1>
           </div>
-          <Link to="/about" className="about-link">
-            📖 About Us
-          </Link>
+          <div className="auth-header-actions">
+            <ThemeToggle />               {/* 👈 Sliding toggle added */}
+            <Link to="/about" className="about-link">
+              📖 About Us
+            </Link>
+          </div>
         </div>
         <div className="header-line"></div>
       </header>

@@ -1,12 +1,13 @@
-// src/components/Login.jsx – with logo + About Us link + header line
+// src/components/Login.jsx – with logo + Theme Toggle + About Us link + header line
 import { useState } from "react";
-import { Link } from "react-router-dom";          // ← for About page link
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ThemeToggle from "./ThemeToggle";        // 👈 import the toggle
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 
-const Login = ({ onSwitchToRegister }) => {
+const Login = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,20 +25,23 @@ const Login = ({ onSwitchToRegister }) => {
 
   return (
     <>
-      {/* ===== HEADER with logo (left), About link (right), and line ===== */}
+      {/* ===== HEADER with logo, theme toggle, About link, and line ===== */}
       <header className="auth-header">
         <div className="header-top">
           <div className="logo">
             <h1 className="animated-title">QGen</h1>
           </div>
-          <Link to="/about" className="about-link">
-            📖 About Us
-          </Link>
+          <div className="auth-header-actions">
+            <ThemeToggle />               {/* 👈 Sliding toggle added here */}
+            <Link to="/about" className="about-link">
+              📖 About Us
+            </Link>
+          </div>
         </div>
         <div className="header-line"></div>
       </header>
 
-      {/* Login form (unchanged) */}
+      {/* Login form */}
       <div className="auth-container">
         <div className="glass-card auth-card">
           <h2 className="animated-title">Login</h2>
@@ -69,7 +73,6 @@ const Login = ({ onSwitchToRegister }) => {
           <p className="auth-switch">
             Don't have an account?{" "}
             <Link to="/register" className="auth-link">Register</Link>
-           
           </p>
         </div>
       </div>

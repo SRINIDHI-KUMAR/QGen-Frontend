@@ -1,6 +1,8 @@
+// src/components/Header.jsx (updated fragment)
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";       // for navigation
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ThemeToggle from "./ThemeToggle";   // import the toggle
 import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
@@ -8,9 +10,8 @@ import { Menu } from "primereact/menu";
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const menuRef = useRef(null);                       // reference for profile menu
+  const menuRef = useRef(null);
 
-  // Menu items for profile dropdown
   const profileMenuItems = [
     {
       label: "Edit Profile",
@@ -35,6 +36,9 @@ const Header = () => {
       </div>
 
       <div className="header-right">
+        {/* Modern theme toggle switch */}
+        <ThemeToggle />
+
         {/* About button */}
         <Button
           icon="pi pi-info-circle"

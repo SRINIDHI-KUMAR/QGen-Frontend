@@ -1,6 +1,7 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";   // Import ThemeProvider
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
@@ -50,9 +51,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
+    <ThemeProvider>            {/* 👈 Wrap with ThemeProvider first */}
+      <AuthProvider>           {/* 👈 Then AuthProvider */}
+        <AppRoutes />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
