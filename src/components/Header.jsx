@@ -1,8 +1,8 @@
-// src/components/Header.jsx (updated fragment)
+// src/components/Header.jsx
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import ThemeToggle from "./ThemeToggle";   // import the toggle
+import ThemeToggle from "./ThemeToggle";
 import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
 import { Menu } from "primereact/menu";
@@ -32,7 +32,14 @@ const Header = () => {
       </div>
 
       <div className="header-center">
-        {user && <span className="greeting">Heyy, {user.username}</span>}
+        {user && (
+          <div className="greeting-wrapper">
+            <span className="greeting">Heyy, {user.username}</span>
+            <span className="greeting-subtitle">
+              📄 Upload your PDF to generate questions
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="header-right">
