@@ -1,7 +1,8 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { ThemeProvider } from "./context/ThemeContext";   // Import ThemeProvider
+import { ThemeProvider } from "./context/ThemeContext";
+import Landing from "./components/Landing";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
@@ -11,17 +12,17 @@ import EditProfile from "./components/EditProfile";
 import Settings from "./components/Settings";
 import "./App.css";
 
-// Component that decides which routes to show based on auth status
 function AppRoutes() {
   const { user, loading } = useAuth();
 
   if (loading) return <div className="loading-screen">Loading...</div>;
 
   if (!user) {
-    // Unauthenticated routes
+    // Unauthenticated routes – Landing is the main entry
     return (
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="*" element={<Navigate to="/" />} />
@@ -29,7 +30,7 @@ function AppRoutes() {
     );
   }
 
-  // Authenticated routes – includes all pages a logged-in user can access
+  // Authenticated routes
   return (
     <Routes>
       <Route
@@ -51,8 +52,8 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>            {/* 👈 Wrap with ThemeProvider first */}
-      <AuthProvider>           {/* 👈 Then AuthProvider */}
+    <ThemeProvider>
+      <AuthProvider>
         <AppRoutes />
       </AuthProvider>
     </ThemeProvider>

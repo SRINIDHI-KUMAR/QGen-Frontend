@@ -1,8 +1,8 @@
-// src/components/Login.jsx – with logo + Theme Toggle + About Us link + header line
+// src/components/Login.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import ThemeToggle from "./ThemeToggle";        // 👈 import the toggle
+import ThemeToggle from "./ThemeToggle";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
@@ -25,14 +25,17 @@ const Login = () => {
 
   return (
     <>
-      {/* ===== HEADER with logo, theme toggle, About link, and line ===== */}
       <header className="auth-header">
         <div className="header-top">
           <div className="logo">
             <h1 className="animated-title">QGen</h1>
           </div>
           <div className="auth-header-actions">
-            <ThemeToggle />               {/* 👈 Sliding toggle added here */}
+            {/* Back button to Landing page */}
+            <Link to="/" className="back-button-header" title="Back to Home">
+              ← Back
+            </Link>
+            <ThemeToggle />
             <Link to="/about" className="about-link">
               📖 About Us
             </Link>
@@ -41,7 +44,6 @@ const Login = () => {
         <div className="header-line"></div>
       </header>
 
-      {/* Login form */}
       <div className="auth-container">
         <div className="glass-card auth-card">
           <h2 className="animated-title">Login</h2>

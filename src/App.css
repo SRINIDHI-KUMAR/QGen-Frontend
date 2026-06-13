@@ -1404,3 +1404,720 @@ body {
   align-items: center;
   gap: 0.75rem;
 }
+
+
+/* Back button in header (rounded, subtle) */
+.back-button-header {
+  background: var(--glass-bg);
+  border: 1px solid var(--border-card);
+  border-radius: 40px;
+  padding: 0.4rem 0.9rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.back-button-header:hover {
+  background: var(--input-bg);
+  transform: translateX(-3px);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+
+
+
+/* ========== LANDING PAGE STYLES ========== */
+.landing-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Navigation - fixed with explicit height */
+.landing-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background: var(--bg-header);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  border-bottom: 1px solid var(--border-card);
+  height: 80px;                     /* Fixed height for offset calculation */
+  box-sizing: border-box;
+}
+
+.brand-name {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  font-size: 0.95rem;
+}
+
+.nav-link:hover {
+  color: var(--accent-blue);
+}
+
+.register-nav-link {
+  background: var(--accent-blue);
+  padding: 0.4rem 1rem;
+  border-radius: 40px;
+  color: white;
+}
+
+.register-nav-link:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* Hero Section - offset for fixed navbar */
+.hero-section {
+  min-height: calc(100vh - 80px);   /* Subtract navbar height */
+  margin-top: 80px;                 /* Push down below fixed navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;                    /* Reduced padding, margin-top handles spacing */
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 2rem !important;
+}
+
+.hero-title {
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.gradient-text {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  border-radius: 40px !important;
+  padding: 0.75rem 1.8rem !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+}
+
+.primary-btn {
+  background: linear-gradient(95deg, var(--accent-blue), #2563eb) !important;
+  border: none !important;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+.secondary-btn {
+  background: transparent !important;
+  border: 1px solid var(--accent-blue) !important;
+  color: var(--accent-blue) !important;
+}
+
+.secondary-btn:hover {
+  background: var(--glass-bg) !important;
+  transform: translateY(-2px);
+}
+
+/* Features Section */
+.features-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  scroll-margin-top: 80px;         /* For smooth scroll anchor */
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  padding: 1.8rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.feature-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* How It Works */
+.how-it-works {
+  padding: 4rem 2rem;
+  text-align: center;
+  scroll-margin-top: 80px;
+}
+
+.steps-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.step {
+  background: var(--glass-bg);
+  padding: 1.5rem;
+  border-radius: 20px;
+  min-width: 160px;
+  text-align: center;
+  border: 1px solid var(--border-card);
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background: var(--accent-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.step h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.step p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.step-arrow {
+  font-size: 1.5rem;
+  color: var(--accent-blue);
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  scroll-margin-top: 80px;
+}
+
+.cta-card {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem !important;
+}
+
+.cta-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.cta-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.cta-btn {
+  background: linear-gradient(95deg, var(--accent-blue), #2563eb) !important;
+  border: none !important;
+  border-radius: 40px !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 600;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.landing-footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border-card);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .landing-nav {
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    height: auto;                 /* Allow auto height on mobile */
+    min-height: 80px;
+  }
+  .hero-section {
+    margin-top: 100px;            /* Increased offset for taller mobile nav */
+    min-height: calc(100vh - 100px);
+    padding: 1rem;
+  }
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  .steps-container {
+    flex-direction: column;
+  }
+  .step-arrow {
+    transform: rotate(90deg);
+  }
+  .hero-title {
+    font-size: 1.6rem;
+  }
+  .features-section,
+  .how-it-works,
+  .cta-section {
+    padding: 2rem 1rem;
+  }
+  .section-title {
+    font-size: 1.8rem;
+  }
+}
+/* ========== UNIFIED DIALOG STYLES (Light & Dark Theme) ========== */
+
+/* Dialog container */
+.p-dialog.curved-dialog {
+  border-radius: 32px !important;
+  overflow: hidden !important;
+  background: var(--dialog-bg) !important;
+  box-shadow: var(--dialog-shadow) !important;
+}
+
+/* Dialog Header */
+.p-dialog.curved-dialog .p-dialog-header {
+  background: var(--dialog-header-bg) !important;
+  border-bottom: 1px solid var(--dialog-border) !important;
+  border-radius: 32px 32px 0 0 !important;
+  padding: 1.2rem 1.5rem !important;
+}
+
+/* Dialog Title */
+.p-dialog.curved-dialog .p-dialog-title {
+  color: var(--dialog-title-color) !important;
+  font-weight: 700 !important;
+  font-size: 1.3rem !important;
+}
+
+/* Close Button */
+.p-dialog.curved-dialog .p-dialog-header-icon {
+  color: var(--dialog-icon-color) !important;
+  background: var(--dialog-icon-bg) !important;
+  border-radius: 50% !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.p-dialog.curved-dialog .p-dialog-header-icon:hover {
+  background: var(--dialog-icon-hover-bg) !important;
+  color: var(--dialog-icon-hover-color) !important;
+  transform: rotate(90deg);
+}
+
+/* Dialog Content */
+.p-dialog.curved-dialog .p-dialog-content {
+  background: var(--dialog-content-bg) !important;
+  color: var(--dialog-text) !important;
+  padding: 1.5rem 2rem !important;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* Dialog Footer */
+.p-dialog.curved-dialog .p-dialog-footer {
+  background: var(--dialog-footer-bg) !important;
+  border-top: 1px solid var(--dialog-border) !important;
+  border-radius: 0 0 32px 32px !important;
+  padding: 1rem 1.5rem !important;
+}
+
+/* ========== DARK THEME VARIABLES (default) ========== */
+:root {
+  --dialog-bg: rgba(17, 24, 39, 0.95);
+  --dialog-header-bg: rgba(15, 23, 42, 0.98);
+  --dialog-content-bg: rgba(17, 24, 39, 0.96);
+  --dialog-footer-bg: rgba(15, 23, 42, 0.98);
+  --dialog-border: rgba(255, 255, 255, 0.1);
+  --dialog-title-color: #f1f5f9;
+  --dialog-text: #cbd5e6;
+  --dialog-icon-color: #94a3b8;
+  --dialog-icon-bg: rgba(255, 255, 255, 0.08);
+  --dialog-icon-hover-bg: rgba(255, 255, 255, 0.15);
+  --dialog-icon-hover-color: #ffffff;
+  --dialog-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== LIGHT THEME OVERRIDES ========== */
+.light-theme {
+  --dialog-bg: #ffffff;
+  --dialog-header-bg: #ffffff;
+  --dialog-content-bg: #ffffff;
+  --dialog-footer-bg: #ffffff;
+  --dialog-border: #e2e8f0;
+  --dialog-title-color: #0f172a;
+  --dialog-text: #1e293b;
+  --dialog-icon-color: #64748b;
+  --dialog-icon-bg: #f1f5f9;
+  --dialog-icon-hover-bg: #e2e8f0;
+  --dialog-icon-hover-color: #0f172a;
+  --dialog-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional content styling inside dialog */
+.dialog-content h2 {
+  color: var(--dialog-title-color) !important;
+  border-left: 4px solid var(--accent-blue);
+  padding-left: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.dialog-content li {
+  color: var(--dialog-text) !important;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.dialog-content p strong {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.1rem 0.3rem;
+  border-radius: 6px;
+}
+
+.dialog-content hr {
+  border-color: var(--dialog-border);
+}
+
+/* Question list items */
+.question-list li {
+  background: var(--glass-bg);
+  margin-bottom: 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  color: var(--dialog-text);
+  border-left: 4px solid var(--accent-blue);
+}
+
+/* Light theme specific adjustments for question list */
+.light-theme .question-list li {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* Centered header variant (if used) */
+.centered-header .p-dialog-header {
+  justify-content: center !important;
+  position: relative;
+}
+
+.centered-header .p-dialog-header-icons {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ========== PROFILE MENU (Light & Dark Theme) ========== */
+
+/* Menu container */
+.p-menu {
+  background: var(--menu-bg) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--menu-border) !important;
+  border-radius: 16px !important;
+  padding: 0.5rem 0 !important;
+  box-shadow: var(--menu-shadow) !important;
+  min-width: 180px;
+}
+
+/* Menu items */
+.p-menu .p-menuitem {
+  margin: 0 !important;
+}
+
+.p-menu .p-menuitem-link {
+  padding: 0.75rem 1.2rem !important;
+  color: var(--menu-text) !important;
+  transition: all 0.2s ease !important;
+  border-radius: 0 !important;
+}
+
+.p-menu .p-menuitem-link:hover {
+  background: var(--menu-hover-bg) !important;
+  color: var(--menu-hover-text) !important;
+}
+
+/* Menu item icon */
+.p-menu .p-menuitem-icon {
+  color: var(--menu-icon) !important;
+  margin-right: 0.75rem !important;
+  font-size: 1rem !important;
+}
+
+.p-menu .p-menuitem-link:hover .p-menuitem-icon {
+  color: var(--menu-icon-hover) !important;
+}
+
+/* Menu item label */
+.p-menu .p-menuitem-text {
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+}
+
+/* Divider between menu groups (if any) */
+.p-menu .p-divider {
+  border-color: var(--menu-border) !important;
+  margin: 0.25rem 0 !important;
+}
+
+/* ========== THEME VARIABLES (Dark = default) ========== */
+:root {
+  --menu-bg: rgba(15, 23, 42, 0.95);
+  --menu-border: rgba(255, 255, 255, 0.1);
+  --menu-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  --menu-text: #e2e8f0;
+  --menu-hover-bg: rgba(96, 165, 250, 0.2);
+  --menu-hover-text: #ffffff;
+  --menu-icon: #94a3b8;
+  --menu-icon-hover: #60a5fa;
+}
+
+/* ========== LIGHT THEME OVERRIDES ========== */
+.light-theme {
+  --menu-bg: #ffffff;
+  --menu-border: #e2e8f0;
+  --menu-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  --menu-text: #1e293b;
+  --menu-hover-bg: #f1f5f9;
+  --menu-hover-text: #0f172a;
+  --menu-icon: #64748b;
+  --menu-icon-hover: #3b82f6;
+}
+
+/* ========== EDIT PROFILE & SETTINGS PAGES (Light & Dark Theme) ========== */
+
+/* Page container - ensure background adapts */
+.edit-profile-container,
+.settings-container {
+  min-height: 100vh;
+  padding: 2rem;
+  margin-top: 80px;
+  background: var(--bg-app);
+}
+
+/* Card styling for forms */
+.edit-profile-card,
+.settings-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 28px;
+  padding: 2rem;
+  backdrop-filter: blur(20px);
+}
+
+/* Headings */
+.edit-profile-card h2,
+.settings-card h2 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Form labels */
+.edit-profile-card label,
+.settings-card label {
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Input fields - already handled by .curved-input class */
+.edit-profile-card .curved-input,
+.settings-card .curved-input {
+  background: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Button styling */
+.save-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  background: linear-gradient(95deg, var(--accent-blue), #2563eb);
+  border: none;
+  border-radius: 40px;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px var(--shadow-color);
+}
+
+/* Info text / helper text */
+.info-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* Light theme specific overrides for forms */
+.light-theme .edit-profile-card,
+.light-theme .settings-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #e2e8f0;
+}
+
+.light-theme .edit-profile-card h2,
+.light-theme .settings-card h2 {
+  color: #0f172a;
+}
+
+.light-theme .edit-profile-card label,
+.light-theme .settings-card label {
+  color: #334155;
+}
+
+.light-theme .info-text {
+  color: #64748b;
+}
+
+/* Dark theme overrides (ensure consistency) */
+.dark-theme .edit-profile-card,
+.dark-theme .settings-card {
+  background: rgba(17, 24, 39, 0.8);
+}
+
+.dark-theme .edit-profile-card h2,
+.dark-theme .settings-card h2 {
+  color: #f1f5f9;
+}
+
+/* ===== Light Theme Menu Fix ===== */
+
+.light-theme .p-menu {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.light-theme .p-menu .p-menuitem-link {
+  color: #1e293b !important;
+}
+
+.light-theme .p-menu .p-menuitem-text {
+  color: #1e293b !important;
+  font-weight: 500 !important;
+}
+
+.light-theme .p-menu .p-menuitem-icon {
+  color: #3b82f6 !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover {
+  background: #f1f5f9 !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover .p-menuitem-text {
+  color: #0f172a !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover .p-menuitem-icon {
+  color: #2563eb !important;
+}
