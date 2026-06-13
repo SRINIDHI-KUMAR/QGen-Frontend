@@ -116,12 +116,13 @@ body {
   max-width: 560px;
   width: 100%;
   margin: 0 auto;
-  padding: 120px 1rem 2rem; /* Top padding to clear fixed header */
+  padding-top: 150px;  /* Increase this value for more gap (e.g., 150px, 180px) */
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  z-index: 10;
-  overflow-y: visible;
 }
 
 /* ========== GLASS CARD ========== */
@@ -2419,4 +2420,36 @@ body {
 }
 
 
+/* ===== Light Theme Menu Fix ===== */
 
+.light-theme .p-menu {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.light-theme .p-menu .p-menuitem-link {
+  color: #1e293b !important;
+}
+
+.light-theme .p-menu .p-menuitem-text {
+  color: #1e293b !important;
+  font-weight: 500 !important;
+}
+
+.light-theme .p-menu .p-menuitem-icon {
+  color: #3b82f6 !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover {
+  background: #f1f5f9 !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover .p-menuitem-text {
+  color: #0f172a !important;
+}
+
+.light-theme .p-menu .p-menuitem-link:hover .p-menuitem-icon {
+  color: #2563eb !important;
+}

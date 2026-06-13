@@ -18,7 +18,7 @@ function AppRoutes() {
   if (loading) return <div className="loading-screen">Loading...</div>;
 
   if (!user) {
-    // Unauthenticated routes – Landing is the main entry
+    // Unauthenticated routes – Landing is root
     return (
       <Routes>
         <Route path="/" element={<Landing />} />

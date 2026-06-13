@@ -6,8 +6,13 @@ import ReactMarkdown from "react-markdown";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { useAuth } from "../context/AuthContext";
 
 const QuestionGenerator = () => {
+  const { user } = useAuth(); // Get current user
+  const userId = user?.id || user?.username || "guest";
+  const storagePrefix = `qgen_${userId}_`; // User-specific prefix
+
   const [file, setFile] = useState(null);
   const [questions, setQuestions] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,12 +25,11 @@ const QuestionGenerator = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   
-  // Stats and Activity
+  // Stats
   const [stats, setStats] = useState({
     pdfsUploaded: 0,
     questionsGenerated: 0,
   });
-  const [activities, setActivities] = useState([]);
   const [counters, setCounters] = useState({ pdfs: 0, questions: 0 });
 
   const [copyFeedback, setCopyFeedback] = useState(false);
@@ -40,19 +44,32 @@ const QuestionGenerator = () => {
     { icon: "✨", message: "Finalizing Question Paper...", progress: 100 },
   ];
 
-  // Load stats and activities from localStorage on mount
+  // Generate unique ID
+  const generateUniqueId = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random()}-${performance.now()}`;
+  };
+
+  // Load user-specific stats and history from localStorage
   useEffect(() => {
-    const savedStats = localStorage.getItem("qgen_stats");
+    const savedStats = localStorage.getItem(`${storagePrefix}stats`);
     if (savedStats) {
       const parsed = JSON.parse(savedStats);
       setStats(parsed);
       setCounters({ pdfs: parsed.pdfsUploaded, questions: parsed.questionsGenerated });
+    } else {
+      // Initialize empty stats for new user
+      setStats({ pdfsUploaded: 0, questionsGenerated: 0 });
+      setCounters({ pdfs: 0, questions: 0 });
     }
-    const savedActivities = localStorage.getItem("qgen_activities");
-    if (savedActivities) {
-      setActivities(JSON.parse(savedActivities));
+    
+    const savedHistory = localStorage.getItem(`${storagePrefix}history`);
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
     }
-  }, []);
+  }, [storagePrefix]);
 
   // Animate counters when stats change
   useEffect(() => {
@@ -82,58 +99,24 @@ const QuestionGenerator = () => {
     return () => clearInterval(timer);
   }, [stats]);
 
-  // Helper to update stats and add activity
-  const updateStatsAndActivity = (type, fileName, questionCount = 0) => {
+  // Helper to update stats and save to localStorage
+  const updateStats = (type, questionCount = 0) => {
     setStats(prevStats => {
       let newStats = { ...prevStats };
-      let newActivity = null;
-
       if (type === "upload") {
         newStats.pdfsUploaded += 1;
-        newActivity = {
-          id: Date.now(),
-          type: "upload",
-          fileName,
-          message: `📄 ${fileName} Uploaded`,
-          icon: "📄",
-          color: "purple",
-          timestamp: new Date().toLocaleString(),
-        };
       } else if (type === "generate") {
         const increment = questionCount > 0 ? questionCount : 10;
         newStats.questionsGenerated += increment;
-        newActivity = {
-          id: Date.now(),
-          type: "generate",
-          fileName,
-          message: `✨ ${fileName} Generated (${increment} questions)`,
-          icon: "✨",
-          color: "blue",
-          timestamp: new Date().toLocaleString(),
-        };
-      } else if (type === "download") {
-        newActivity = {
-          id: Date.now(),
-          type: "download",
-          fileName,
-          message: `⬇️ ${fileName} Downloaded`,
-          icon: "⬇️",
-          color: "green",
-          timestamp: new Date().toLocaleString(),
-        };
       }
-
-      if (newActivity) {
-        setActivities(prev => {
-          const newActivities = [newActivity, ...prev].slice(0, 20);
-          localStorage.setItem("qgen_activities", JSON.stringify(newActivities));
-          return newActivities;
-        });
-      }
-
-      localStorage.setItem("qgen_stats", JSON.stringify(newStats));
+      localStorage.setItem(`${storagePrefix}stats`, JSON.stringify(newStats));
       return newStats;
     });
+  };
+
+  // Save history to localStorage
+  const saveHistory = (newHistory) => {
+    localStorage.setItem(`${storagePrefix}history`, JSON.stringify(newHistory));
   };
 
   useEffect(() => {
@@ -161,7 +144,7 @@ const QuestionGenerator = () => {
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile);
       setUploadSuccess(true);
-      updateStatsAndActivity("upload", selectedFile.name);
+      updateStats("upload");
       toast.current.show({ severity: 'success', summary: 'PDF Selected', detail: selectedFile.name, life: 2000 });
       setTimeout(() => setUploadSuccess(false), 1500);
     } else {
@@ -201,16 +184,18 @@ const QuestionGenerator = () => {
       setQuestions(generatedQuestions);
       
       const questionCount = (generatedQuestions.match(/\d+\./g) || []).length;
-      updateStatsAndActivity("generate", file.name, questionCount);
+      updateStats("generate", questionCount);
       
-      setHistory((prev) => [
-        {
-          fileName: file.name,
-          date: new Date().toLocaleString(),
-          content: generatedQuestions,
-        },
-        ...prev,
-      ]);
+      const newHistoryItem = {
+        id: generateUniqueId(),
+        fileName: file.name,
+        date: new Date().toLocaleString(),
+        content: generatedQuestions,
+      };
+      const newHistory = [newHistoryItem, ...history].slice(0, 20);
+      setHistory(newHistory);
+      saveHistory(newHistory);
+      
       setProcessingVisible(false);
       setVisible(true);
     } catch (err) {
@@ -231,7 +216,6 @@ const QuestionGenerator = () => {
 
   const downloadPDF = () => {
     setDownloadFeedback(true);
-    if (file) updateStatsAndActivity("download", file.name);
     const doc = new jsPDF();
     const cleanText = questions
       .replace(/#{1,6}\s/g, "")
@@ -372,15 +356,15 @@ const QuestionGenerator = () => {
           </div>
         </div>
 
-        {/* History Panel */}
+        {/* History Panel - Recent Generations */}
         <div className="history-panel">
           <h3><i className="pi pi-history"></i> Recent Generations</h3>
           {history.length === 0 ? (
             <p>No history yet</p>
           ) : (
-            history.map((item, index) => (
+            history.map((item) => (
               <div
-                key={index}
+                key={item.id}
                 className="history-item"
                 onClick={() => {
                   setQuestions(item.content);
@@ -393,39 +377,20 @@ const QuestionGenerator = () => {
             ))
           )}
         </div>
-
-        {/* Recent Activity Timeline */}
-        <div className="activity-card glass-card">
-          <h3>📅 Recent Activity</h3>
-          <div className="timeline">
-            {activities.length === 0 ? (
-              <p className="empty-activity">No activity yet. Upload a PDF to get started!</p>
-            ) : (
-              activities.map((activity) => (
-                <div key={activity.id} className={`timeline-item ${activity.color}`}>
-                  <div className="timeline-icon">{activity.icon}</div>
-                  <div className="timeline-content">
-                    <p>{activity.message}</p>
-                    <small>{activity.timestamp}</small>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
       </div>
 
       {/* AI Processing Dialog */}
       <Dialog
         header="AI is Thinking"
         visible={processingVisible}
-        style={{ width: "450px" }}
+        style={{ width: "550px", height: "auto" }}
         onHide={() => {}}
         closable={false}
         draggable={false}
         resizable={false}
         className="curved-dialog centered-header processing-dialog"
         footer={processingFooter}
+        contentStyle={{ minHeight: "280px" }}
       >
         {renderProcessingContent()}
       </Dialog>
@@ -442,7 +407,7 @@ const QuestionGenerator = () => {
       >
         <div className="dialog-content">
           <ReactMarkdown>{questions}</ReactMarkdown>
-        </div>
+        </div>  
       </Dialog>
     </div>
   );
