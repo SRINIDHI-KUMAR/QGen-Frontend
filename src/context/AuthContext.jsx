@@ -5,35 +5,25 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // no need to load anything
 
-  // Load persisted user and registered users from localStorage on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem("qgen_user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
+  // ----- REMOVED: no automatic login from localStorage -----
+  // The useEffect that read qgen_user is deleted.
 
-  // Get registered users list
+  // Get registered users list (persisted)
   const getUsers = () => {
     return JSON.parse(localStorage.getItem("qgen_users") || "[]");
   };
 
-  // Save users list
+  // Save users list (persisted)
   const saveUsers = (users) => {
     localStorage.setItem("qgen_users", JSON.stringify(users));
   };
 
-  // Save current user
-  const saveUser = (userData) => {
-    localStorage.setItem("qgen_user", JSON.stringify(userData));
-  };
+  // ----- NO saveUser function – session is not persisted -----
 
   const login = (email, password, username) => {
     const users = getUsers();
-    // Check if a user with this email and password exists
     const found = users.find(
       (u) => u.email === email && u.password === password
     );
@@ -41,46 +31,40 @@ export const AuthProvider = ({ children }) => {
       throw new Error("Invalid email or password. Please register first.");
     }
 
-    // Set the user (omit password from the stored user object)
+    // Set user in memory only – no localStorage save
     const { password: _, ...userWithoutPassword } = found;
     setUser(userWithoutPassword);
-    saveUser(userWithoutPassword);
     return true;
   };
 
   const register = (email, password, username) => {
     const users = getUsers();
 
-    // Check if email already registered
     if (users.some((u) => u.email === email)) {
       throw new Error("An account with this email already exists.");
     }
 
-    // Create new user
     const newUser = {
       id: Date.now().toString(),
       email,
       username,
-      password, // store plain password for demo; in production, hash it!
+      password, // plain password for demo
     };
 
-    // Save to users list
     users.push(newUser);
     saveUsers(users);
 
-    // Log the user in (omit password)
+    // Log the user in (memory only)
     const { password: _, ...userWithoutPassword } = newUser;
     setUser(userWithoutPassword);
-    saveUser(userWithoutPassword);
     return true;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("qgen_user");
+    // No localStorage removal needed because we never stored the session
   };
 
-  // Optional: update profile (for Edit Profile page)
   const updateProfile = ({ username, email }) => {
     if (!user) return;
     const users = getUsers();
@@ -91,11 +75,9 @@ export const AuthProvider = ({ children }) => {
       saveUsers(users);
       const updatedUser = { ...user, username, email };
       setUser(updatedUser);
-      saveUser(updatedUser);
     }
   };
 
-  // Optional: change password
   const changePassword = (currentPassword, newPassword) => {
     if (!user) return;
     const users = getUsers();

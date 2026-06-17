@@ -1,12 +1,12 @@
-// src/context/ThemeContext.js
+// src/context/ThemeContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Load saved theme from localStorage or default to 'dark'
+  // Load saved theme from localStorage or default to 'light'
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
+    return localStorage.getItem('theme') || 'light'; // 👈 changed from 'dark'
   });
 
   // Apply theme class to html element and save to localStorage whenever theme changes
