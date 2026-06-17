@@ -30,7 +30,7 @@ const HomePage = () => {
   <div className="welcome-card">
 
     <h1 className="welcome-title">
-      Welcome back, <span>{user?.username || "User"}</span>
+      Welcome, <span>{user?.username || "User"}</span>
     </h1>
 
     <p className="welcome-subtitle">
