@@ -24,26 +24,20 @@ const Register = () => {
   };
 
   return (
-    <>
-      <header className="auth-header">
-        <div className="header-top">
-          <div className="logo">
-            <h1 className="animated-title">QGen</h1>
-          </div>
-          <div className="auth-header-actions">
-            <Link to="/" className="back-button-header" title="Back to Home">
-              ← Back
-            </Link>
-            <ThemeToggle />
-            <Link to="/about" className="about-link">
-              📖 About Us
-            </Link>
-          </div>
+    <div className="landing-page">
+      {/* Navigation Bar – same as Landing and Login */}
+      <nav className="landing-nav">
+        <div className="nav-brand">
+          <h1 className="xeus-animated">QGen</h1>
         </div>
-        <div className="header-line"></div>
-      </header>
+        <div className="nav-links">
+          <a href="/" className="nav-link">Home</a>
+          <Link to="/login" className="nav-link">Login</Link>
+        </div>
+      </nav>
 
-      <div className="auth-container">
+      {/* Register Form – centered with top padding to clear the fixed navbar */}
+      <div className="auth-container" style={{ paddingTop: '100px' }}>
         <div className="glass-card auth-card">
           <h2 className="animated-title">Register</h2>
           <form onSubmit={handleSubmit}>
@@ -86,7 +80,7 @@ const Register = () => {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

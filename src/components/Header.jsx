@@ -1,29 +1,26 @@
 // src/components/Header.jsx
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
-import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
-import { Menu } from "primereact/menu";
+import { Sidebar } from "primereact/sidebar";
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const menuRef = useRef(null);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
-  const profileMenuItems = [
-    {
-      label: "Edit Profile",
-      icon: "pi pi-user-edit",
-      command: () => navigate("/edit-profile"),
-    },
-    {
-      label: "Settings",
-      icon: "pi pi-cog",
-      command: () => navigate("/settings"),
-    },
-  ];
+  const handleNavigation = (path) => {
+    navigate(path);
+    setSidebarVisible(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setSidebarVisible(false);
+    navigate("/"); // 👈 redirect to landing page after logout
+  };
 
   return (
     <header className="app-header">
@@ -31,46 +28,68 @@ const Header = () => {
         <h1 className="xeus-animated">QGen</h1>
       </div>
 
-      <div className="header-center">
-        {user && (
-          <div className="greeting-wrapper">
-            <span className="greeting">Heyy, {user.username}</span>
-            <span className="greeting-subtitle">
-              📄 Upload your PDF to generate questions
-            </span>
-          </div>
-        )}
-      </div>
+      <nav className="header-nav">
+        <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          Home
+        </NavLink>
+        <NavLink to="/generate" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          Generate
+        </NavLink>
+        <NavLink to="/stats" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          Stats
+        </NavLink>
+        <NavLink to="/about" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          About
+        </NavLink>
+      </nav>
 
       <div className="header-right">
-        {/* Modern theme toggle switch */}
         <ThemeToggle />
 
-        {/* About button */}
-        <Button
-          icon="pi pi-info-circle"
-          className="p-button-rounded p-button-text about-header-btn"
-          tooltipOptions={{ position: "bottom" }}
-          onClick={() => navigate("/about")}
-        />
-
-        {/* Profile avatar with menu */}
         <Avatar
           icon="pi pi-user"
           shape="circle"
           className="profile-avatar"
-          onClick={(e) => menuRef.current.toggle(e)}
-          style={{ cursor: "pointer", marginLeft: "0.5rem" }}
+          onClick={() => setSidebarVisible(true)}
+          style={{ cursor: "pointer" }}
         />
-        <Menu model={profileMenuItems} popup ref={menuRef} />
 
-        {/* Logout button */}
-        <Button
-          label="Logout"
-          icon="pi pi-sign-out"
-          className="p-button-danger logout-btn"
-          onClick={logout}
-        />
+        <Sidebar
+          visible={sidebarVisible}
+          position="right"
+          onHide={() => setSidebarVisible(false)}
+          className="profile-sidebar"
+          showCloseIcon={true}
+          modal={true}
+        >
+          <div className="sidebar-content">
+            <div className="sidebar-user">
+              <Avatar icon="pi pi-user" shape="circle" size="large" className="sidebar-avatar" />
+              <p className="sidebar-username">{user?.username || "User"}</p>
+              <p className="sidebar-email">{user?.email || "user@email.com"}</p>
+            </div>
+
+            <div className="sidebar-menu">
+              <div className="sidebar-menu-group">
+                <div className="sidebar-menu-item" onClick={() => handleNavigation("/edit-profile")}>
+                  <i className="pi pi-user-edit sidebar-menu-icon"></i>
+                  <span>Edit Profile</span>
+                </div>
+                <div className="sidebar-menu-item" onClick={() => handleNavigation("/settings")}>
+                  <i className="pi pi-cog sidebar-menu-icon"></i>
+                  <span>Settings</span>
+                </div>
+              </div>
+
+              <div className="sidebar-menu-divider"></div>
+
+              <div className="sidebar-menu-item logout-item" onClick={handleLogout}>
+                <i className="pi pi-sign-out sidebar-menu-icon"></i>
+                <span>Logout</span>
+              </div>
+            </div>
+          </div>
+        </Sidebar>
       </div>
     </header>
   );

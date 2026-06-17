@@ -11,7 +11,7 @@ import { useAuth } from "../context/AuthContext";
 
 const QuestionGenerator = () => {
   const { user } = useAuth();
-  const userId = user?.id || user?.username || "guest";
+  const userId = user?.username || "guest";
   const storagePrefix = `qgen_${userId}_`;
 
   const [file, setFile] = useState(null);
@@ -25,24 +25,22 @@ const QuestionGenerator = () => {
   const [stepMessage, setStepMessage] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  
-  // Custom prompt
-  const [customPrompt, setCustomPrompt] = useState("Generate 10 MCQs, 5 short questions, and 5 long questions from the following PDF content.");
 
-  // Stats
+  const [customPrompt, setCustomPrompt] = useState(
+    "Generate 10 MCQs, 5 short questions, and 5 long questions from the following PDF content."
+  );
+
   const [stats, setStats] = useState({ pdfsUploaded: 0, questionsGenerated: 0 });
-  const [counters, setCounters] = useState({ pdfs: 0, questions: 0 });
-
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [downloadFeedback, setDownloadFeedback] = useState(false);
   const toast = useRef(null);
   const fileInputRef = useRef(null);
 
   const processingSteps = [
-    { icon: "🤖", message: "Analyzing PDF...", progress: 25 },
-    { icon: "📚", message: "Understanding Concepts...", progress: 50 },
-    { icon: "✍️", message: "Creating Questions...", progress: 75 },
-    { icon: "✨", message: "Finalizing Question Paper...", progress: 100 },
+    { message: "Analyzing PDF...", progress: 25 },
+    { message: "Understanding Concepts...", progress: 50 },
+    { message: "Creating Questions...", progress: 75 },
+    { message: "Finalizing Question Paper...", progress: 100 },
   ];
 
   const generateUniqueId = () => {
@@ -50,47 +48,21 @@ const QuestionGenerator = () => {
     return `${Date.now()}-${Math.random()}-${performance.now()}`;
   };
 
-  // Load user data from localStorage
+  // Load stats from localStorage (only for update, not display)
   useEffect(() => {
     const savedStats = localStorage.getItem(`${storagePrefix}stats`);
     if (savedStats) {
-      const parsed = JSON.parse(savedStats);
-      setStats(parsed);
-      setCounters({ pdfs: parsed.pdfsUploaded, questions: parsed.questionsGenerated });
+      setStats(JSON.parse(savedStats));
     } else {
       setStats({ pdfsUploaded: 0, questionsGenerated: 0 });
-      setCounters({ pdfs: 0, questions: 0 });
     }
     const savedHistory = localStorage.getItem(`${storagePrefix}history`);
     if (savedHistory) setHistory(JSON.parse(savedHistory));
   }, [storagePrefix]);
 
-  // Animate counters
-  useEffect(() => {
-    const duration = 800, steps = 40;
-    const startPdf = counters.pdfs, startQ = counters.questions;
-    const endPdf = stats.pdfsUploaded, endQ = stats.questionsGenerated;
-    const diffPdf = endPdf - startPdf, diffQ = endQ - startQ;
-    if (diffPdf === 0 && diffQ === 0) return;
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      if (step <= steps) {
-        setCounters({
-          pdfs: Math.min(Math.floor(startPdf + (diffPdf * step / steps)), endPdf),
-          questions: Math.min(Math.floor(startQ + (diffQ * step / steps)), endQ),
-        });
-      } else {
-        clearInterval(timer);
-        setCounters({ pdfs: endPdf, questions: endQ });
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [stats]);
-
   const updateStats = (type, questionCount = 0) => {
-    setStats(prevStats => {
-      let newStats = { ...prevStats };
+    setStats(prev => {
+      const newStats = { ...prev };
       if (type === "upload") newStats.pdfsUploaded += 1;
       else if (type === "generate") newStats.questionsGenerated += questionCount;
       localStorage.setItem(`${storagePrefix}stats`, JSON.stringify(newStats));
@@ -102,25 +74,24 @@ const QuestionGenerator = () => {
     localStorage.setItem(`${storagePrefix}history`, JSON.stringify(newHistory));
   };
 
-  // Processing animation
-  useEffect(() => {
-    let interval;
-    if (processingVisible) {
-      let stepIndex = 0;
-      setCurrentStep(0);
-      setStepMessage(processingSteps[0].message);
-      setProgress(0);
-      interval = setInterval(() => {
-        stepIndex++;
-        if (stepIndex < processingSteps.length) {
-          setCurrentStep(stepIndex);
-          setStepMessage(processingSteps[stepIndex].message);
-          setProgress(processingSteps[stepIndex].progress);
-        } else clearInterval(interval);
-      }, 2000);
-    }
-    return () => clearInterval(interval);
-  }, [processingVisible]);
+  // Helper to count questions from generated text
+  const countQuestions = (text) => {
+    if (!text) return 0;
+
+    // Count numbered items like "1.", "2." etc.
+    const numbered = (text.match(/\d+\.\s/g) || []).length;
+    if (numbered > 0) return numbered;
+
+    // Count occurrences of the word "Question" (case‑insensitive)
+    const questionWords = (text.match(/Question/gi) || []).length;
+    if (questionWords > 0) return questionWords;
+
+    // If the text is not empty and no numbers or "Question" found,
+    // assume it contains at least one question.
+    return text.trim() ? 1 : 0;
+  };
+
+  // Removed fake animation useEffect
 
   const handleFileSelect = (selectedFile) => {
     if (selectedFile && selectedFile.type === "application/pdf") {
@@ -155,34 +126,92 @@ const QuestionGenerator = () => {
     try {
       setProcessingVisible(true);
       setLoading(true);
+      setStepMessage("Initializing...");
+      setProgress(0);
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("custom_prompt", customPrompt);
 
-const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", formData);
-      const generatedQuestions = res.data.questions;
-      setQuestions(generatedQuestions);
+      const response = await fetch("https://qgen-backend-8dx2.onrender.com/generate", {
+        method: "POST",
+        body: formData,
+      });
 
-      const questionCount = (generatedQuestions.match(/\d+\./g) || []).length;
-      updateStats("generate", questionCount);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Server error");
+      }
 
-      const newHistoryItem = {
-        id: generateUniqueId(),
-        fileName: file.name,
-        date: new Date().toLocaleString(),
-        content: generatedQuestions,
-      };
-      const newHistory = [newHistoryItem, ...history].slice(0, 20);
-      setHistory(newHistory);
-      saveHistory(newHistory);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let fullQuestions = "";
 
-      setProcessingVisible(false);
-      setVisible(true);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            try {
+              const event = JSON.parse(data);
+              if (event.status === "error") {
+                toast.current.show({
+                  severity: 'error',
+                  summary: 'Generation failed',
+                  detail: event.message,
+                  life: 3000,
+                });
+                setProcessingVisible(false);
+                setLoading(false);
+                return;
+              } else if (event.status === "complete") {
+                fullQuestions = event.questions;
+                setQuestions(fullQuestions);
+
+                const questionCount = countQuestions(fullQuestions); // improved
+                updateStats("generate", questionCount);
+
+                const newHistoryItem = {
+                  id: generateUniqueId(),
+                  fileName: file.name,
+                  date: new Date().toLocaleString(),
+                  content: fullQuestions,
+                  prompt: customPrompt,
+                };
+                const newHistory = [newHistoryItem, ...history].slice(0, 20);
+                setHistory(newHistory);
+                saveHistory(newHistory);
+
+                setProcessingVisible(false);
+                setVisible(true);
+                setLoading(false);
+                return;
+              } else {
+                setStepMessage(event.message || "Processing...");
+                setProgress(event.progress || 0);
+              }
+            } catch (e) {
+              console.warn("Failed to parse event:", data);
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error(err);
-      toast.current.show({ severity: 'error', summary: 'Generation failed', detail: err.message, life: 3000 });
+      toast.current.show({
+        severity: 'error',
+        summary: 'Generation failed',
+        detail: err.message || 'Network error',
+        life: 3000,
+      });
       setProcessingVisible(false);
-    } finally {
       setLoading(false);
     }
   };
@@ -232,11 +261,11 @@ const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", 
 
   const renderProcessingContent = () => (
     <div className="processing-content">
-      <div className="processing-icon glow">{processingSteps[currentStep]?.icon || "🤖"}</div>
+      <div className="processing-icon glow">{processingSteps[currentStep]?.icon || ""}</div>
       <div className="processing-message">{stepMessage}</div>
       <div className="progress-bar-container"><div className="progress-bar" style={{ width: `${progress}%` }}></div></div>
       <div className="processing-percent">{progress}%</div>
-      <div className="processing-tip">✨ Our AI is working its magic ✨</div>
+      <div className="processing-tip">Our AI is working its magic</div>
     </div>
   );
 
@@ -250,27 +279,24 @@ const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", 
   return (
     <div className="app">
       <Toast ref={toast} position="top-right" className="custom-toast" />
-      <div className="main-container">
+      <div className="main-container generator-container">
         <div className="glass-card">
           <h1 className="animated-title">Question Generator</h1>
 
-          {/* Custom Prompt Input - DeepSeek style */}
           <div className="prompt-config" style={{ marginBottom: "1rem" }}>
-            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500, color: "var(--text-secondary)" }}>
-              ✍️ Your Prompt
+            <label style={{ display: "block", marginBottom: "0.5rem", textAlign: "center", fontSize: "0.85rem", fontWeight: 400, color: "var(--text-secondary)" }}>
+              Enter Your Prompt
             </label>
             <InputTextarea
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              rows={4}
-              autoResize
+              rows={2}
               placeholder="Example: Generate 20 important questions from the following PDF content. Include MCQs, short answers, and long answers. Avoid duplicates and focus on key concepts."
               className="curved-input"
               style={{ width: "100%", resize: "vertical" }}
             />
           </div>
 
-          {/* Drag & Drop Area */}
           <div
             className={`upload-area ${isDragging ? "dragging" : ""} ${file ? "has-file" : ""}`}
             onDragOver={handleDragOver}
@@ -281,13 +307,13 @@ const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", 
             <input type="file" ref={fileInputRef} accept=".pdf" onChange={e => handleFileSelect(e.target.files[0])} style={{ display: "none" }} />
             {!file ? (
               <>
-                <div className="upload-illustration">📄</div>
+                <div className="upload-illustration"></div>
                 <div className="upload-title">Drag & Drop PDF Here</div>
                 <div className="upload-subtitle">or <span className="browse-link">Browse Files</span></div>
               </>
             ) : (
               <div className="file-info">
-                <div className="file-icon">📄</div>
+                <div className="file-icon"></div>
                 <div className="file-details">
                   <div className="file-name">{file.name}</div>
                   <div className="file-meta">{formatFileSize(file.size)}</div>
@@ -299,30 +325,12 @@ const res = await axios.post("https://qgen-backend-8dx2.onrender.com/generate", 
 
           {file && <Button className="generate-btn" label={loading ? "Generating..." : "Generate Questions"} icon="pi pi-bolt" onClick={generateQuestions} disabled={loading} />}
         </div>
-
-        {/* Stats */}
-        <div className="stats-grid">
-          <div className="stat-card gradient-card-1"><div className="stat-icon">📄</div><div className="stat-info"><h3>PDFs Uploaded</h3><div className="stat-number">{counters.pdfs}</div></div></div>
-          <div className="stat-card gradient-card-2"><div className="stat-icon">❓</div><div className="stat-info"><h3>Questions Generated</h3><div className="stat-number">{counters.questions}</div></div></div>
-        </div>
-
-        {/* History */}
-        <div className="history-panel">
-          <h3><i className="pi pi-history"></i> Recent Generations</h3>
-          {history.length === 0 ? <p>No history yet</p> : history.map(item => (
-            <div key={item.id} className="history-item" onClick={() => { setQuestions(item.content); setVisible(true); }}>
-              <div>{item.fileName}</div><small>{item.date}</small>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* Processing Dialog */}
       <Dialog header="AI is Thinking" visible={processingVisible} style={{ width: "550px", height: "auto" }} onHide={() => {}} closable={false} draggable={false} resizable={false} className="curved-dialog centered-header processing-dialog" footer={processingFooter} contentStyle={{ minHeight: "280px" }}>
         {renderProcessingContent()}
       </Dialog>
 
-      {/* Results Dialog */}
       <Dialog header="Generated Questions" visible={visible} style={{ width: "70vw", maxWidth: "900px" }} onHide={() => setVisible(false)} maximizable footer={footer} className="curved-dialog centered-header">
         <div className="dialog-content"><ReactMarkdown>{questions}</ReactMarkdown></div>
       </Dialog>

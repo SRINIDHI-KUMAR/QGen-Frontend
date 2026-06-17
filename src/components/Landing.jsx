@@ -9,8 +9,8 @@ const Landing = () => {
       {/* Navigation Bar */}
       <nav className="landing-nav">
   <div className="nav-brand">
-    <div className="brand-logo"></div>
-    <h1 className="brand-name">QGen</h1>
+
+    <h1 className="xeus-animated">QGen</h1>
   </div>
 
   <div className="nav-links">
@@ -18,7 +18,6 @@ const Landing = () => {
     <a href="#features" className="nav-link">Features</a>
     <Link to="/login" className="nav-link">Login</Link>
     <Link to="/register" className="nav-link register-nav-link">Register</Link>
-    <ThemeToggle />
   </div>
 </nav>
       {/* Hero Section */}
@@ -46,22 +45,22 @@ const Landing = () => {
         <h2 className="section-title">Features</h2>
         <div className="features-grid">
           <div className="feature-card glass-card">
-            <div className="feature-icon">📄</div>
+            <div className="feature-icon"></div>
             <h3>Upload PDFs</h3>
             <p>Upload books, notes, and syllabuses with ease</p>
           </div>
           <div className="feature-card glass-card">
-            <div className="feature-icon">🤖</div>
+            <div className="feature-icon"></div>
             <h3>AI Generation</h3>
             <p>Generate MCQs and descriptive questions instantly</p>
           </div>
           <div className="feature-card glass-card">
-            <div className="feature-icon">📑</div>
+            <div className="feature-icon"></div>
             <h3>Export Papers</h3>
             <p>Download generated question papers as PDFs</p>
           </div>
           <div className="feature-card glass-card">
-            <div className="feature-icon">📚</div>
+            <div className="feature-icon"></div>
             <h3>History Access</h3>
             <p>View and manage previous generations anytime</p>
           </div>
