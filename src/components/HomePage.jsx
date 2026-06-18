@@ -33,7 +33,7 @@ const HomePage = () => {
         <div className="welcome-card glass-card">
           <h1 className="welcome-title">
             <i className="pi pi-user welcome-icon"></i>
-            Welcome back, <span className="username-highlight">{user?.username || "User"}</span>
+            Welcome, <span className="username-highlight">{user?.username || "User"}</span>
           </h1>
           <p className="welcome-subtitle">
             You've generated <strong>{totalGenerations}</strong> question paper
