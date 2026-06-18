@@ -11,6 +11,7 @@ const HomePage = () => {
 
   const [stats, setStats] = useState({ pdfsUploaded: 0, questionsGenerated: 0 });
   const [recent, setRecent] = useState([]);
+  const [totalGenerations, setTotalGenerations] = useState(0);
 
   useEffect(() => {
     const savedStats = localStorage.getItem(`${storagePrefix}stats`);
@@ -19,107 +20,130 @@ const HomePage = () => {
     }
     const savedHistory = localStorage.getItem(`${storagePrefix}history`);
     if (savedHistory) {
-      setRecent(JSON.parse(savedHistory).slice(0, 5));
+      const history = JSON.parse(savedHistory);
+      setRecent(history.slice(0, 5));
+      setTotalGenerations(history.length);
     }
   }, [storagePrefix]);
 
   return (
     <div className="home-page">
-      {/* ===== DASHBOARD SECTION ===== */}
+      {/* ===== WELCOME SECTION ===== */}
       <div className="welcome-section">
-  <div className="welcome-card">
-
-    <h1 className="welcome-title">
-      Welcome, <span>{user?.username || "User"}</span>
-    </h1>
-
-    <p className="welcome-subtitle">
-      Ready to create your next question paper? Generate, customize,
-      and manage assessments with AI-powered efficiency.
-    </p>
-  </div>
-</div>
-
-
-
-      {/* ===== MARKETING / LANDING PAGE CONTENT (DIFFERENT VERSION) ===== */}
-
-
-      <section className="marketing-hero">
-        <div className="marketing-content">
-          <h2>Unlock the Full Potential of AI Question Generation</h2>
-          <p>
-            Whether you're an educator, trainer, or content creator, QGen empowers you to
-            produce high‑quality assessments in minutes. Leverage the latest AI to save
-            time and enhance learning outcomes.
+        <div className="welcome-card glass-card">
+          <h1 className="welcome-title">
+            <i className="pi pi-user welcome-icon"></i>
+            Welcome back, <span className="username-highlight">{user?.username || "User"}</span>
+          </h1>
+          <p className="welcome-subtitle">
+            You've generated <strong>{totalGenerations}</strong> question paper
+            {totalGenerations !== 1 ? "s" : ""} so far. Ready for another?
           </p>
         </div>
-      </section>
+      </div>
 
-      <section className="marketing-features">
-        <h2 className="section-title">What Makes QGen Powerful</h2>
-        <div className="features-grid">
-          <div className="feature-card glass-card">
-            <div className="feature-icon"></div>
-            <h3>Lightning Fast</h3>
-            <p>Generate question papers in seconds, not hours.</p>
+      {/* ===== QUICK STATS ===== */}
+      <div className="stats-grid home-stats">
+        <div className="stat-card gradient-card-1">
+          <div className="stat-icon">
+            <i className="pi pi-file-pdf"></i>
           </div>
-          <div className="feature-card glass-card">
-            <div className="feature-icon"></div>
-            <h3>Customizable Output</h3>
-            <p>Adjust difficulty, question types, and topics easily.</p>
-          </div>
-          <div className="feature-card glass-card">
-            <div className="feature-icon"></div>
-            <h3>Iterative Refinement</h3>
-            <p>Tweak prompts and regenerate until you get exactly what you need.</p>
-          </div>
-          <div className="feature-card glass-card">
-            <div className="feature-icon"></div>
-            <h3>Export & Share</h3>
-            <p>Download as PDF or copy to clipboard for seamless integration.</p>
+          <div className="stat-info">
+            <h3>PDFs Uploaded</h3>
+            <div className="stat-number">{stats.pdfsUploaded}</div>
           </div>
         </div>
-      </section>
-
-      <section className="marketing-how-it-works">
-        <h2 className="section-title">How It Works – Step by Step</h2>
-        <div className="steps-container">
-          <div className="step">
-            <div className="step-number">1</div>
-            <h3>Upload or Paste</h3>
-            <p>Upload a PDF or paste text directly into the editor.</p>
+        <div className="stat-card gradient-card-2">
+          <div className="stat-icon">
+            <i className="pi pi-question-circle"></i>
           </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">2</div>
-            <h3>Write Your Prompt</h3>
-            <p>Tell the AI what kind of questions you need (MCQs, short, long).</p>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">3</div>
-            <h3>Generate & Refine</h3>
-            <p>Click generate, review the output, and regenerate if needed.</p>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">4</div>
-            <h3>Download or Copy</h3>
-            <p>Export your final question paper with one click.</p>
+          <div className="stat-info">
+            <h3>Questions Generated</h3>
+            <div className="stat-number">{stats.questionsGenerated}</div>
           </div>
         </div>
-      </section>
+        <div className="stat-card gradient-card-3">
+          <div className="stat-icon">
+            <i className="pi pi-history"></i>
+          </div>
+          <div className="stat-info">
+            <h3>Total Generations</h3>
+            <div className="stat-number">{totalGenerations}</div>
+          </div>
+        </div>
+      </div>
 
-      <section className="marketing-cta">
-        <div className="cta-card glass-card">
-          <h2>Ready to create your next masterpiece?</h2>
-          <p>Start generating question papers right now.</p>
-          <Link to="/generate">
-            <Button label="Go to Generator" className="cta-btn" />
+      {/* ===== QUICK ACTIONS ===== */}
+      <div className="quick-actions glass-card">
+        <h2>Quick Actions</h2>
+        <div className="action-grid">
+          <Link to="/generate" className="action-item">
+            <span className="action-icon">
+              <i className="pi pi-plus-circle"></i>
+            </span>
+            <span>New Generation</span>
+          </Link>
+          <Link to="/stats" className="action-item">
+            <span className="action-icon">
+              <i className="pi pi-chart-bar"></i>
+            </span>
+            <span>View History</span>
+          </Link>
+          <Link to="/about" className="action-item">
+            <span className="action-icon">
+              <i className="pi pi-info-circle"></i>
+            </span>
+            <span>About QGen</span>
+          </Link>
+          <Link to="/settings" className="action-item">
+            <span className="action-icon">
+              <i className="pi pi-cog"></i>
+            </span>
+            <span>Settings</span>
           </Link>
         </div>
-      </section>
+      </div>
+
+      {/* ===== RECENT ACTIVITY ===== */}
+      <div className="history-panel home-history">
+        <h3>
+          <i className="pi pi-clock"></i> Recent Generations
+        </h3>
+        {recent.length === 0 ? (
+          <p className="empty-history">
+            You haven't generated any questions yet.
+            <Link to="/generate" style={{ color: 'var(--accent-blue)', marginLeft: '0.3rem' }}>
+              Start now →
+            </Link>
+          </p>
+        ) : (
+          recent.map((item) => (
+            <div key={item.id} className="history-item">
+              <div>
+                <span className="history-file">{item.fileName}</span>
+                <span className="history-date">{item.date}</span>
+              </div>
+            </div>
+          ))
+        )}
+        {recent.length > 0 && (
+          <div className="view-all">
+            <Link to="/stats">View all {totalGenerations} generations →</Link>
+          </div>
+        )}
+      </div>
+
+      {/* ===== TIPS SECTION ===== */}
+      <div className="tip-card glass-card">
+        <h3>
+          <i className="pi pi-lightbulb"></i> Pro Tip
+        </h3>
+        <p>
+          For best results, use clear, well‑structured PDFs and be specific in your prompt.
+          The AI performs better with focused instructions. You can also adjust difficulty
+          and question types by mentioning them in your prompt.
+        </p>
+      </div>
     </div>
   );
 };

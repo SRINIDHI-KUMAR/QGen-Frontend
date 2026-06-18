@@ -15,7 +15,7 @@ const Stats = () => {
   const [stats, setStats] = useState({ pdfsUploaded: 0, questionsGenerated: 0 });
   const [history, setHistory] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState("");
-  const [selectedPrompt, setSelectedPrompt] = useState(""); // 👈 new state
+  const [selectedPrompt, setSelectedPrompt] = useState("");
   const [dialogVisible, setDialogVisible] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [downloadFeedback, setDownloadFeedback] = useState(false);
@@ -84,19 +84,32 @@ const Stats = () => {
       <Toast ref={toast} position="top-right" className="custom-toast" />
       <div className="glass-card">
         <h2 className="animated-title">Activity Overview</h2>
-        <div className="stats-grid">
+        <div className="stats-grid stats-grid-three">
           <div className="stat-card gradient-card-1">
-            <div className="stat-icon"></div>
+            <div className="stat-icon">
+              <i className="pi pi-file-pdf"></i>
+            </div>
             <div className="stat-info">
               <h3>PDFs Uploaded</h3>
               <div className="stat-number">{stats.pdfsUploaded}</div>
             </div>
           </div>
           <div className="stat-card gradient-card-2">
-            <div className="stat-icon"></div>
+            <div className="stat-icon">
+              <i className="pi pi-question-circle"></i>
+            </div>
             <div className="stat-info">
               <h3>Questions Generated</h3>
               <div className="stat-number">{stats.questionsGenerated}</div>
+            </div>
+          </div>
+          <div className="stat-card gradient-card-3">
+            <div className="stat-icon">
+              <i className="pi pi-history"></i>
+            </div>
+            <div className="stat-info">
+              <h3>Total Generations</h3>
+              <div className="stat-number">{history.length}</div>
             </div>
           </div>
         </div>
@@ -111,7 +124,7 @@ const Stats = () => {
             <div
               key={item.id}
               className="history-item"
-              onClick={() => handleItemClick(item.content, item.prompt)} // 👈 pass prompt
+              onClick={() => handleItemClick(item.content, item.prompt)}
             >
               <div>{item.fileName}</div>
               <small>{item.date}</small>
